@@ -9,7 +9,6 @@ import ForgotPassword from "./Components/AuthenticationComponents/ForgotPassword
 
 function App() {
   return (
-    <div>
       <AuthProvider>
         <Router basename="/resume">
           <Switch>
@@ -21,7 +20,6 @@ function App() {
           </Switch>
         </Router>
       </AuthProvider>
-    </div>
   );
 }
 
