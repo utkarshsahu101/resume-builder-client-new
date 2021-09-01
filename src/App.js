@@ -1,23 +1,26 @@
-import logo from './logo.svg';
-import './App.css';
+import Login from "./Components/AuthenticationComponents/Login";
+import Registration from "./Components/AuthenticationComponents/Registration";
+import Resume from "./Components/Resume";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import "typeface-roboto";
+import { AuthProvider } from "./Context/AuthContext";
+import PrivateRoute from "./Components/AuthenticationComponents/PrivateRoute";
+import ForgotPassword from "./Components/AuthenticationComponents/ForgotPassword";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <AuthProvider>
+        <Router basename="/resume">
+          <Switch>
+            <PrivateRoute exact path="/" component={Resume} />
+            {/* <Route exact path="/" component={Resume}></Route> */}
+            <Route path="/login" component={Login}></Route>
+            <Route path="/signUp" component={Registration}></Route>
+            <Route path="/forgot-password" component={ForgotPassword}></Route>
+          </Switch>
+        </Router>
+      </AuthProvider>
     </div>
   );
 }
