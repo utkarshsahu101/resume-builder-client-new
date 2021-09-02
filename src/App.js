@@ -9,17 +9,17 @@ import ForgotPassword from "./Components/AuthenticationComponents/ForgotPassword
 
 function App() {
   return (
-      <AuthProvider>
-        <Router basename="/resume">
-          <Switch>
-            <PrivateRoute exact path="/" component={Resume} />
-            {/* <Route exact path="/" component={Resume}></Route> */}
-            <Route path="/login" component={Login}></Route>
-            <Route path="/signUp" component={Registration}></Route>
-            <Route path="/forgot-password" component={ForgotPassword}></Route>
-          </Switch>
-        </Router>
-      </AuthProvider>
+    <AuthProvider>
+      <Router basename="/resume">
+        <Switch>
+          <PrivateRoute exact path="/" component={Resume} />
+          {/* <Route exact path="/" component={Resume}></Route> */}
+          <Route path="/login" component={Login}></Route>
+          <Route path="/signUp" component={Registration}></Route>
+          <Route path="/forgot-password" component={ForgotPassword}></Route>
+        </Switch>
+      </Router>
+    </AuthProvider>
   );
 }
 

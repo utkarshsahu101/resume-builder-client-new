@@ -19,7 +19,7 @@ import {
 } from "@material-ui/core";
 // import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import CheckCircleOutlinedIcon from "@material-ui/icons/CheckCircleOutlined";
-import RadioButtonUncheckedOutlinedIcon from '@material-ui/icons/RadioButtonUncheckedOutlined';
+import RadioButtonUncheckedOutlinedIcon from "@material-ui/icons/RadioButtonUncheckedOutlined";
 
 const useStyles = makeStyles({
   wrapper: {
@@ -143,7 +143,7 @@ function Resume() {
     "Extra Details",
   ];
   return (
-    <div>
+    <>
       <Header />
       <Box
         display="flex"
@@ -192,7 +192,11 @@ function Resume() {
                   </Typography>
                 </Box>
               </Box>
-              <Box display="flex" flexDirection="column" alignContent='space-around'>
+              <Box
+                display="flex"
+                flexDirection="column"
+                alignContent="space-around"
+              >
                 {sections.map((section, index) => (
                   <Box
                     display="flex"
@@ -201,9 +205,17 @@ function Resume() {
                     key={index}
                   >
                     <Typography gutterBottom>{section}</Typography>
-                    {!index ? <CheckCircleOutlinedIcon color="primary" fontSize="large" /> : <RadioButtonUncheckedOutlinedIcon
-                     color="disabled" fontSize="large" />}
-                    
+                    {!index ? (
+                      <CheckCircleOutlinedIcon
+                        color="primary"
+                        fontSize="large"
+                      />
+                    ) : (
+                      <RadioButtonUncheckedOutlinedIcon
+                        color="disabled"
+                        fontSize="large"
+                      />
+                    )}
                   </Box>
                 ))}
               </Box>
@@ -211,7 +223,7 @@ function Resume() {
           </Card>
         </Box>
       </Box>
-    </div>
+    </>
   );
 }
 
