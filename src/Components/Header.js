@@ -18,8 +18,6 @@ import { Alert } from "@material-ui/lab";
 
 const useStyles = makeStyles((theme) => ({
   header: {
-    // display: "flex",
-    // justifyContent: "space-between",
     "@media (max-width: 900px)": {
       paddingLeft: 0,
     },

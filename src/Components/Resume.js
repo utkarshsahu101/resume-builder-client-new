@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PersonalDetails from "./PersonalDetails";
 import ProjectsDeveloped from "./ProjectsDeveloped";
 import EducationalDetails from "./EducationalDetails";
@@ -17,7 +17,6 @@ import {
   Paper,
   Typography,
 } from "@material-ui/core";
-// import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import CheckCircleOutlinedIcon from "@material-ui/icons/CheckCircleOutlined";
 import RadioButtonUncheckedOutlinedIcon from "@material-ui/icons/RadioButtonUncheckedOutlined";
 
@@ -40,21 +39,43 @@ const useStyles = makeStyles({
   pos: {
     marginBottom: 12,
   },
+  zeroProgress: {
+    color: "#BDBDBD",
+  },
 });
 
 function Resume() {
   const [step, setStep] = useState(1);
-  // personal details
-  const [firstName, setfirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phoneNumber, setphoneNumber] = useState("");
-  const [website, setWebsite] = useState("");
-  const [githubUsername, setgithubUsername] = useState("");
-  const [linkedinUsername, setlinkedinUsername] = useState("");
-  const [twitterUsername, settwitterUsername] = useState("");
-  const [facebookUsername, setfacebookUsername] = useState("");
-  const [instagramHandle, setinstagramHandle] = useState("");
+  const [errors, setError] = useState({
+    isError: false,
+    msg: {
+      personalDetails: {
+        firstName: "",
+        lastName: "",
+        email: "",
+      },
+    },
+    fieldsObject: {
+      personalDetails: {
+        firstName: false,
+        lastName: false,
+        email: false,
+      },
+    },
+  });
+
+  const [personalDetails, setPersonalDetails] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phoneNumber: "",
+    website: "",
+    githubUsername: "",
+    linkedinUsername: "",
+    facebookUsername: "",
+  });
+
+  let requiredFields = ["firstName", "lastName", "email"];
 
   // educational details
 
@@ -64,21 +85,33 @@ function Resume() {
 
   // extra details
 
-  const personalDetails = {
-    firstName,
-    lastName,
-    email,
-    phoneNumber,
-    website,
-    githubUsername,
-    linkedinUsername,
-    twitterUsername,
-    facebookUsername,
-    instagramHandle,
-  };
 
   const nextStep = () => {
-    setStep(step + 1);
+    let { isError, fieldsObject, msg } = errors;
+    switch (step) {
+      case 1:
+        if (personalDetails.firstName === "") {
+          isError = true;
+          fieldsObject.personalDetails.firstName = true;
+          msg.personalDetails.firstName = "Firstname field can't be empty";
+        }
+        if (personalDetails.lastName === "") {
+          isError = true;
+          fieldsObject.personalDetails.lastName = true;
+          msg.personalDetails.lastName = "Lastname field can't be empty";
+        }
+        if (personalDetails.email === "") {
+          isError = true;
+          fieldsObject.personalDetails.email = true;
+          msg.personalDetails.email = "Email field can't be empty";
+        }
+        setError({ ...errors, fieldsObject, isError, msg });
+        break;
+
+      default:
+        break;
+    }
+    if (!isError) setStep(step + 1);
   };
 
   const prevStep = () => {
@@ -86,6 +119,20 @@ function Resume() {
   };
 
   const handleChange = (e) => {};
+
+
+  const onChange = (field, e) => {
+    let { fieldsObject, isError } = errors;
+    fieldsObject.personalDetails[field] = false;
+    isError = false;
+    setError({ ...errors, fieldsObject, isError });
+    setPersonalDetails({
+      ...personalDetails,
+      [field]: e.target.value,
+    });
+  };
+  // console.log("personalDetails", personalDetails);
+
 
   const componentRendered = () => {
     switch (step) {
@@ -97,6 +144,10 @@ function Resume() {
             prevStep={prevStep}
             step={step}
             personalDetails={personalDetails}
+            setPersonalDetails={setPersonalDetails}
+            onChange={onChange}
+            errors={errors}
+            setError={setError}
           />
         );
       case 2:
@@ -166,12 +217,23 @@ function Resume() {
               />
 
               <Box position="relative" display="inline-flex">
-                <CircularProgress
-                  size={100}
-                  variant="determinate"
-                  thickness={5}
-                  value={25}
-                />
+                {step - 1 === 0 && (
+                  <CircularProgress
+                    size={100}
+                    variant="determinate"
+                    thickness={5}
+                    value={100}
+                    className={classes.zeroProgress}
+                  />
+                )}
+                {step - 1 !== 0 && (
+                  <CircularProgress
+                    size={100}
+                    variant="determinate"
+                    thickness={5}
+                    value={(step - 1) * (100 / 5)}
+                  />
+                )}
                 <Box
                   top={0}
                   left={0}
@@ -187,7 +249,7 @@ function Resume() {
                     component="div"
                     color="textSecondary"
                   >
-                    1/5
+                    {step - 1}/5
                   </Typography>
                 </Box>
               </Box>
