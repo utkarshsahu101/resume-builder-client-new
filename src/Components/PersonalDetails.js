@@ -51,18 +51,17 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function PersonalDetails(props) {
-  let { setPersonalDetails, personalDetails, errors, setError, onChange } =
-    props;
+  let { personalDetails, errors, onChange, totalSteps } = props;
+
+  let { requiredFields, optionalFields } = personalDetails;
+  let { firstName, lastName, email } = requiredFields;
   let {
-    firstName,
-    lastName,
-    email,
     phoneNumber,
     website,
     githubUsername,
     linkedinUsername,
     facebookUsername,
-  } = personalDetails;
+  } = optionalFields;
 
   const classes = useStyles();
 
@@ -92,7 +91,7 @@ function PersonalDetails(props) {
                 required
                 fullWidth
                 value={firstName}
-                onChange={(e) => onChange("firstName", e)}
+                onChange={(e) => onChange("requiredFields", "firstName", e)}
                 error={errors.fieldsObject.personalDetails.firstName}
                 helperText={
                   errors.fieldsObject.personalDetails.firstName &&
@@ -106,7 +105,7 @@ function PersonalDetails(props) {
                 required
                 fullWidth
                 value={lastName}
-                onChange={(e) => onChange("lastName", e)}
+                onChange={(e) => onChange("requiredFields", "lastName", e)}
                 error={errors.fieldsObject.personalDetails.lastName}
                 helperText={
                   errors.fieldsObject.personalDetails.lastName &&
@@ -128,7 +127,7 @@ function PersonalDetails(props) {
                   ),
                 }}
                 value={email}
-                onChange={(e) => onChange("email", e)}
+                onChange={(e) => onChange("requiredFields", "email", e)}
                 error={errors.fieldsObject.personalDetails.email}
                 helperText={
                   errors.fieldsObject.personalDetails.email &&
@@ -148,12 +147,7 @@ function PersonalDetails(props) {
                   ),
                 }}
                 value={phoneNumber}
-                onChange={(e) => {
-                  setPersonalDetails({
-                    ...personalDetails,
-                    phoneNumber: e.target.value,
-                  });
-                }}
+                onChange={(e) => onChange("optionalFields", "phoneNumber", e)}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -168,12 +162,7 @@ function PersonalDetails(props) {
                   ),
                 }}
                 value={website}
-                onChange={(e) => {
-                  setPersonalDetails({
-                    ...personalDetails,
-                    website: e.target.value,
-                  });
-                }}
+                onChange={(e) => onChange("optionalFields", "website", e)}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -188,12 +177,9 @@ function PersonalDetails(props) {
                   ),
                 }}
                 value={githubUsername}
-                onChange={(e) => {
-                  setPersonalDetails({
-                    ...personalDetails,
-                    githubUsername: e.target.value,
-                  });
-                }}
+                onChange={(e) =>
+                  onChange("optionalFields", "githubUsername", e)
+                }
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -208,12 +194,9 @@ function PersonalDetails(props) {
                   ),
                 }}
                 value={linkedinUsername}
-                onChange={(e) => {
-                  setPersonalDetails({
-                    ...personalDetails,
-                    linkedinUsername: e.target.value,
-                  });
-                }}
+                onChange={(e) =>
+                  onChange("optionalFields", "linkedinUsername", e)
+                }
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -228,12 +211,9 @@ function PersonalDetails(props) {
                   ),
                 }}
                 value={facebookUsername}
-                onChange={(e) => {
-                  setPersonalDetails({
-                    ...personalDetails,
-                    facebookUsername: e.target.value,
-                  });
-                }}
+                onChange={(e) =>
+                  onChange("optionalFields", "facebookUsername", e)
+                }
               />
             </Grid>
           </Grid>
@@ -245,7 +225,9 @@ function PersonalDetails(props) {
             </IconButton>
           </Grid>
           <Grid item>
-            <Typography>{props.step}/5</Typography>
+            <Typography>
+              {props.step}/{totalSteps}
+            </Typography>
           </Grid>
           <Grid item>
             <IconButton aria-label="next" onClick={props.nextStep}>

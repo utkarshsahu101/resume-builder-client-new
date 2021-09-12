@@ -21,21 +21,12 @@ import CheckCircleOutlinedIcon from "@material-ui/icons/CheckCircleOutlined";
 import RadioButtonUncheckedOutlinedIcon from "@material-ui/icons/RadioButtonUncheckedOutlined";
 
 const useStyles = makeStyles({
-  wrapper: {
-    // margin: 25,
-  },
-  section: {
-    // width: "75%",
-    // marignRight: 10,
-  },
+  wrapper: {},
+  section: {},
   progress: {
-    // minWidth: 350,
-    // width: "25%",
     textAlign: "center",
   },
-  title: {
-    // fontSize: 14,
-  },
+  title: {},
   pos: {
     marginBottom: 12,
   },
@@ -44,6 +35,7 @@ const useStyles = makeStyles({
   },
 });
 
+const totalSteps = 5;
 function Resume() {
   const [step, setStep] = useState(1);
   const [errors, setError] = useState({
@@ -57,25 +49,50 @@ function Resume() {
     },
     fieldsObject: {
       personalDetails: {
+        isError: false,
+        sectionName: "Personal Details",
         firstName: false,
         lastName: false,
         email: false,
       },
+      educationDetails: {
+        isError: false,
+        sectionName: "Educational Details",
+      },
+      experienceDetails: {
+        isError: false,
+        sectionName: "Experience Details",
+      },
     },
   });
 
-  const [personalDetails, setPersonalDetails] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phoneNumber: "",
-    website: "",
-    githubUsername: "",
-    linkedinUsername: "",
-    facebookUsername: "",
+  const [details, setDetails] = useState({
+    personalDetails: {
+      requiredFields: {
+        firstName: "",
+        lastName: "",
+        email: "",
+      },
+      optionalFields: {
+        phoneNumber: "",
+        website: "",
+        githubUsername: "",
+        linkedinUsername: "",
+        facebookUsername: "",
+      },
+    },
+    educationDetails: {
+      requiredFields: {
+        class10marks: "",
+        class10schoolName: "",
+        class12marks: "",
+        class12schoolName: "",
+        graduationmarks: "",
+        graduationschoolName: "",
+      },
+      optionalFields: {},
+    },
   });
-
-  let requiredFields = ["firstName", "lastName", "email"];
 
   // educational details
 
@@ -85,25 +102,28 @@ function Resume() {
 
   // extra details
 
-
   const nextStep = () => {
     let { isError, fieldsObject, msg } = errors;
+    let { personalDetails } = details;
     switch (step) {
       case 1:
-        if (personalDetails.firstName === "") {
+        if (personalDetails.requiredFields.firstName === "") {
           isError = true;
           fieldsObject.personalDetails.firstName = true;
-          msg.personalDetails.firstName = "Firstname field can't be empty";
+          fieldsObject.personalDetails.isError = true;
+          msg.personalDetails.firstName = "Firstname can't be empty";
         }
-        if (personalDetails.lastName === "") {
+        if (personalDetails.requiredFields.lastName === "") {
           isError = true;
           fieldsObject.personalDetails.lastName = true;
-          msg.personalDetails.lastName = "Lastname field can't be empty";
+          fieldsObject.personalDetails.isError = true;
+          msg.personalDetails.lastName = "Lastname can't be empty";
         }
-        if (personalDetails.email === "") {
+        if (personalDetails.requiredFields.email === "") {
           isError = true;
           fieldsObject.personalDetails.email = true;
-          msg.personalDetails.email = "Email field can't be empty";
+          fieldsObject.personalDetails.isError = true;
+          msg.personalDetails.email = "Email can't be empty";
         }
         setError({ ...errors, fieldsObject, isError, msg });
         break;
@@ -118,23 +138,25 @@ function Resume() {
     setStep(step - 1);
   };
 
-  const handleChange = (e) => {};
-
-
-  const onChange = (field, e) => {
+  const onChange = (filedType, field, e) => {
     let { fieldsObject, isError } = errors;
     fieldsObject.personalDetails[field] = false;
     isError = false;
     setError({ ...errors, fieldsObject, isError });
-    setPersonalDetails({
-      ...personalDetails,
-      [field]: e.target.value,
+    setDetails({
+      ...details,
+      personalDetails: {
+        ...details.personalDetails,
+        [filedType]: {
+          ...details.personalDetails[filedType],
+          [field]: e.target.value,
+        },
+      },
     });
   };
-  // console.log("personalDetails", personalDetails);
-
 
   const componentRendered = () => {
+    let { personalDetails, setDetails } = details;
     switch (step) {
       case 1:
         return (
@@ -144,10 +166,9 @@ function Resume() {
             prevStep={prevStep}
             step={step}
             personalDetails={personalDetails}
-            setPersonalDetails={setPersonalDetails}
             onChange={onChange}
             errors={errors}
-            setError={setError}
+            totalSteps={totalSteps}
           />
         );
       case 2:
@@ -192,6 +213,10 @@ function Resume() {
     "Experience Details",
     "Extra Details",
   ];
+  const checkEmpty = (currentValue) => {
+    console.log("currentValue", currentValue);
+    return currentValue === "";
+  };
   return (
     <>
       <Header />
@@ -217,21 +242,12 @@ function Resume() {
               />
 
               <Box position="relative" display="inline-flex">
-                {step - 1 === 0 && (
+                {step && (
                   <CircularProgress
                     size={100}
                     variant="determinate"
                     thickness={5}
-                    value={100}
-                    className={classes.zeroProgress}
-                  />
-                )}
-                {step - 1 !== 0 && (
-                  <CircularProgress
-                    size={100}
-                    variant="determinate"
-                    thickness={5}
-                    value={(step - 1) * (100 / 5)}
+                    value={step * (100 / totalSteps)}
                   />
                 )}
                 <Box
@@ -249,7 +265,7 @@ function Resume() {
                     component="div"
                     color="textSecondary"
                   >
-                    {step - 1}/5
+                    {step}/{totalSteps}
                   </Typography>
                 </Box>
               </Box>
@@ -258,27 +274,35 @@ function Resume() {
                 flexDirection="column"
                 alignContent="space-around"
               >
-                {sections.map((section, index) => (
-                  <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    key={index}
-                  >
-                    <Typography gutterBottom>{section}</Typography>
-                    {!index ? (
-                      <CheckCircleOutlinedIcon
-                        color="primary"
-                        fontSize="large"
-                      />
-                    ) : (
-                      <RadioButtonUncheckedOutlinedIcon
-                        color="disabled"
-                        fontSize="large"
-                      />
-                    )}
-                  </Box>
-                ))}
+                {Object.keys(details).map((section, index) => {
+                  let isEmpty = true;
+                  isEmpty = Object.keys(
+                    details[section]["requiredFields"]
+                  ).some((field) => {
+                    return details[section]["requiredFields"][field] === "";
+                  });
+                  return (
+                    <Box
+                      display="flex"
+                      justifyContent="space-between"
+                      alignItems="center"
+                      key={index}
+                    >
+                      <Typography gutterBottom>{section}</Typography>
+                      {isEmpty ? (
+                        <RadioButtonUncheckedOutlinedIcon
+                          color="disabled"
+                          fontSize="large"
+                        />
+                      ) : (
+                        <CheckCircleOutlinedIcon
+                          color="primary"
+                          fontSize="large"
+                        />
+                      )}
+                    </Box>
+                  );
+                })}
               </Box>
             </CardContent>
           </Card>
