@@ -13,7 +13,6 @@ import React from "react";
 import { useTheme } from "@material-ui/core/styles";
 import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
 import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
-import { AccountCircle } from "@material-ui/icons";
 import EmailOutlinedIcon from "@material-ui/icons/EmailOutlined";
 import PhoneAndroidOutlinedIcon from "@material-ui/icons/PhoneAndroidOutlined";
 import LanguageOutlinedIcon from "@material-ui/icons/LanguageOutlined";
@@ -51,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function PersonalDetails(props) {
-  let { personalDetails, errors, onChange, totalSteps } = props;
+  let { personalDetails, errors, onChange, totalSteps, step, nextStep } = props;
 
   let { requiredFields, optionalFields } = personalDetails;
   let { firstName, lastName, email } = requiredFields;
@@ -71,7 +70,7 @@ function PersonalDetails(props) {
   return (
     <div>
       <div className={classes.heading}>
-        <Avatar className={classes.step}>{props.step}</Avatar>
+        <Avatar className={classes.step}>{step}</Avatar>
         <Typography color="inherit" variant="h5">
           Personal Details
         </Typography>
@@ -91,7 +90,7 @@ function PersonalDetails(props) {
                 required
                 fullWidth
                 value={firstName}
-                onChange={(e) => onChange("requiredFields", "firstName", e)}
+                onChange={(e) => onChange('personalDetails', "requiredFields", "firstName", 'string',e)}
                 error={errors.fieldsObject.personalDetails.firstName}
                 helperText={
                   errors.fieldsObject.personalDetails.firstName &&
@@ -105,7 +104,7 @@ function PersonalDetails(props) {
                 required
                 fullWidth
                 value={lastName}
-                onChange={(e) => onChange("requiredFields", "lastName", e)}
+                onChange={(e) => onChange('personalDetails', "requiredFields", "lastName", 'string',e)}
                 error={errors.fieldsObject.personalDetails.lastName}
                 helperText={
                   errors.fieldsObject.personalDetails.lastName &&
@@ -127,7 +126,7 @@ function PersonalDetails(props) {
                   ),
                 }}
                 value={email}
-                onChange={(e) => onChange("requiredFields", "email", e)}
+                onChange={(e) => onChange('personalDetails', "requiredFields", "email", 'string',e)}
                 error={errors.fieldsObject.personalDetails.email}
                 helperText={
                   errors.fieldsObject.personalDetails.email &&
@@ -147,7 +146,7 @@ function PersonalDetails(props) {
                   ),
                 }}
                 value={phoneNumber}
-                onChange={(e) => onChange("optionalFields", "phoneNumber", e)}
+                onChange={(e) => onChange('personalDetails', "optionalFields", "phoneNumber", 'string',e)}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -162,7 +161,7 @@ function PersonalDetails(props) {
                   ),
                 }}
                 value={website}
-                onChange={(e) => onChange("optionalFields", "website", e)}
+                onChange={(e) => onChange('personalDetails', "optionalFields", "website", 'string',e)}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -178,7 +177,7 @@ function PersonalDetails(props) {
                 }}
                 value={githubUsername}
                 onChange={(e) =>
-                  onChange("optionalFields", "githubUsername", e)
+                  onChange('personalDetails', "optionalFields", "githubUsername", 'string',e)
                 }
               />
             </Grid>
@@ -195,7 +194,7 @@ function PersonalDetails(props) {
                 }}
                 value={linkedinUsername}
                 onChange={(e) =>
-                  onChange("optionalFields", "linkedinUsername", e)
+                  onChange('personalDetails', "optionalFields", "linkedinUsername", 'string',e)
                 }
               />
             </Grid>
@@ -212,7 +211,7 @@ function PersonalDetails(props) {
                 }}
                 value={facebookUsername}
                 onChange={(e) =>
-                  onChange("optionalFields", "facebookUsername", e)
+                  onChange('personalDetails', "optionalFields", "facebookUsername", 'string',e)
                 }
               />
             </Grid>
@@ -226,11 +225,11 @@ function PersonalDetails(props) {
           </Grid>
           <Grid item>
             <Typography>
-              {props.step}/{totalSteps}
+              {step}/{totalSteps}
             </Typography>
           </Grid>
           <Grid item>
-            <IconButton aria-label="next" onClick={props.nextStep}>
+            <IconButton aria-label="next" onClick={nextStep}>
               <ArrowForwardIosIcon />
             </IconButton>
           </Grid>

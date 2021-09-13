@@ -46,6 +46,17 @@ function Resume() {
         lastName: "",
         email: "",
       },
+      educationalDetails: {
+        class10marks: "",
+        class10schoolName: "",
+        class10StartDate: "",
+        class10EndDate: "",
+
+        class12marks: "",
+        class12schoolName: "",
+        class12StartDate: "",
+        class12EndDate: "",
+      },
     },
     fieldsObject: {
       personalDetails: {
@@ -55,9 +66,19 @@ function Resume() {
         lastName: false,
         email: false,
       },
-      educationDetails: {
+      educationalDetails: {
         isError: false,
         sectionName: "Educational Details",
+
+        class10marks: false,
+        class10schoolName: false,
+        class10StartDate: false,
+        class10EndDate: false,
+
+        class12marks: false,
+        class12schoolName: false,
+        class12StartDate: false,
+        class12EndDate: false,
       },
       experienceDetails: {
         isError: false,
@@ -81,20 +102,21 @@ function Resume() {
         facebookUsername: "",
       },
     },
-    educationDetails: {
+    educationalDetails: {
       requiredFields: {
         class10marks: "",
         class10schoolName: "",
+        class10StartDate: null,
+        class10EndDate: null,
+
         class12marks: "",
         class12schoolName: "",
-        graduationmarks: "",
-        graduationschoolName: "",
+        class12StartDate: null,
+        class12EndDate: null,
       },
       optionalFields: {},
     },
   });
-
-  // educational details
 
   // projects details
 
@@ -104,7 +126,7 @@ function Resume() {
 
   const nextStep = () => {
     let { isError, fieldsObject, msg } = errors;
-    let { personalDetails } = details;
+    let { personalDetails, educationalDetails } = details;
     switch (step) {
       case 1:
         if (personalDetails.requiredFields.firstName === "") {
@@ -127,6 +149,60 @@ function Resume() {
         }
         setError({ ...errors, fieldsObject, isError, msg });
         break;
+      case 2:
+        if (educationalDetails.requiredFields.class10marks === "") {
+          isError = true;
+          fieldsObject.educationalDetails.class10marks = true;
+          fieldsObject.educationalDetails.isError = true;
+          msg.educationalDetails.class10marks = "Marks can't be empty";
+        }
+        if (educationalDetails.requiredFields.class10schoolName === "") {
+          isError = true;
+          fieldsObject.educationalDetails.class10schoolName = true;
+          fieldsObject.educationalDetails.isError = true;
+          msg.educationalDetails.class10schoolName =
+            "School name can't be empty";
+        }
+        if (educationalDetails.requiredFields.class10StartDate === null) {
+          isError = true;
+          fieldsObject.educationalDetails.class10StartDate = true;
+          fieldsObject.educationalDetails.isError = true;
+          msg.educationalDetails.class10StartDate = "Start date can't be empty";
+        }
+        if (educationalDetails.requiredFields.class10EndDate === null) {
+          isError = true;
+          fieldsObject.educationalDetails.class10EndDate = true;
+          fieldsObject.educationalDetails.isError = true;
+          msg.educationalDetails.class10EndDate = "End date can't be empty";
+        }
+        if (educationalDetails.requiredFields.class12marks === '') {
+          isError = true;
+          fieldsObject.educationalDetails.class12marks = true;
+          fieldsObject.educationalDetails.isError = true;
+          msg.educationalDetails.class12marks = "Marks can't be empty";
+        }
+        if (educationalDetails.requiredFields.class12schoolName === '') {
+          isError = true;
+          fieldsObject.educationalDetails.class12schoolName = true;
+          fieldsObject.educationalDetails.isError = true;
+          msg.educationalDetails.class12schoolName =
+            "School name can't be empty";
+        }
+        if (educationalDetails.requiredFields.class12StartDate === null) {
+          isError = true;
+          fieldsObject.educationalDetails.class12StartDate = true;
+          fieldsObject.educationalDetails.isError = true;
+          msg.educationalDetails.class12StartDate = "Start date can't be empty";
+        }
+        if (educationalDetails.requiredFields.class12EndDate === null) {
+          isError = true;
+          fieldsObject.educationalDetails.class12EndDate = true;
+          fieldsObject.educationalDetails.isError = true;
+          msg.educationalDetails.class12EndDate = "End date can't be empty";
+        }
+        setError({ ...errors, fieldsObject, isError, msg });
+
+        break;
 
       default:
         break;
@@ -138,31 +214,46 @@ function Resume() {
     setStep(step - 1);
   };
 
-  const onChange = (filedType, field, e) => {
+  const onChange = (section, filedType, field, dataType, e) => {
     let { fieldsObject, isError } = errors;
-    fieldsObject.personalDetails[field] = false;
+    fieldsObject[section][field] = false;
     isError = false;
     setError({ ...errors, fieldsObject, isError });
-    setDetails({
-      ...details,
-      personalDetails: {
-        ...details.personalDetails,
-        [filedType]: {
-          ...details.personalDetails[filedType],
-          [field]: e.target.value,
+
+    if (dataType === "string") {
+      setDetails({
+        ...details,
+        [section]: {
+          ...details[section],
+          [filedType]: {
+            ...details[section][filedType],
+            [field]: e.target.value,
+          },
         },
-      },
-    });
+      });
+    }
+
+    if (dataType === "date") {
+      setDetails({
+        ...details,
+        [section]: {
+          ...details[section],
+          [filedType]: {
+            ...details[section][filedType],
+            [field]: e,
+          },
+        },
+      });
+    }
   };
 
   const componentRendered = () => {
-    let { personalDetails, setDetails } = details;
+    let { personalDetails, setDetails, educationalDetails } = details;
     switch (step) {
       case 1:
         return (
           <PersonalDetails
             nextStep={nextStep}
-            EducationDetails
             prevStep={prevStep}
             step={step}
             personalDetails={personalDetails}
@@ -177,6 +268,10 @@ function Resume() {
             nextStep={nextStep}
             prevStep={prevStep}
             step={step}
+            totalSteps={totalSteps}
+            educationalDetails={educationalDetails}
+            onChange={onChange}
+            errors={errors}
           />
         );
       case 3:
@@ -205,11 +300,6 @@ function Resume() {
   };
 
   const classes = useStyles();
-
-  const checkEmpty = (currentValue) => {
-    console.log("currentValue", currentValue);
-    return currentValue === "";
-  };
 
   const camelPad = (str) => {
     return (
