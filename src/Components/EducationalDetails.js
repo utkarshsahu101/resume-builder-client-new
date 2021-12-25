@@ -356,6 +356,7 @@ function EducationalDetails(props) {
           </Grid>
         </form>
       </Container>
+      
       <Grid container className={classes.arrowWrapper}>
         <Grid item>
           <IconButton aria-label="back" onClick={prevStep}>

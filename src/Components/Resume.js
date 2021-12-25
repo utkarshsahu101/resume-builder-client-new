@@ -104,6 +104,16 @@ function Resume() {
     },
     educationalDetails: {
       requiredFields: {
+        // class10marks: "",
+        // class10schoolName: "",
+        // class10StartDate: null,
+        // class10EndDate: null,
+        // class12marks: "",
+        // class12schoolName: "",
+        // class12StartDate: null,
+        // class12EndDate: null,
+      },
+      optionalFields: {
         class10marks: "",
         class10schoolName: "",
         class10StartDate: null,
@@ -114,11 +124,18 @@ function Resume() {
         class12StartDate: null,
         class12EndDate: null,
       },
-      optionalFields: {},
+    },
+    projectsDetails: {
+      optionalFields: {
+        project1: {
+          title: "g",
+          link: "",
+          githubLink: "",
+          description: "",
+        },
+      },
     },
   });
-
-  // projects details
 
   // experience details
 
@@ -126,7 +143,7 @@ function Resume() {
 
   const nextStep = () => {
     let { isError, fieldsObject, msg } = errors;
-    let { personalDetails, educationalDetails } = details;
+    let { personalDetails, educationalDetails, projectsDetails } = details;
     switch (step) {
       case 1:
         if (personalDetails.requiredFields.firstName === "") {
@@ -175,13 +192,13 @@ function Resume() {
           fieldsObject.educationalDetails.isError = true;
           msg.educationalDetails.class10EndDate = "End date can't be empty";
         }
-        if (educationalDetails.requiredFields.class12marks === '') {
+        if (educationalDetails.requiredFields.class12marks === "") {
           isError = true;
           fieldsObject.educationalDetails.class12marks = true;
           fieldsObject.educationalDetails.isError = true;
           msg.educationalDetails.class12marks = "Marks can't be empty";
         }
-        if (educationalDetails.requiredFields.class12schoolName === '') {
+        if (educationalDetails.requiredFields.class12schoolName === "") {
           isError = true;
           fieldsObject.educationalDetails.class12schoolName = true;
           fieldsObject.educationalDetails.isError = true;
@@ -214,13 +231,77 @@ function Resume() {
     setStep(step - 1);
   };
 
+  const addMoreHandler = (addMore) => {
+    let { projectsDetails } = details;
+    let { optionalFields } = projectsDetails;
+    let newProject = {
+      title: "",
+      link: "",
+      githubLink: "",
+      description: "",
+    };
+    // optionalFields.push(newProject);
+    // setDetails({
+    //   ...details,
+    //   educationalDetails: { ...details["educationalDetails"], optionalFields },
+    // });
+    // console.log(details);
+  };
+
+  const removeProjectHandler = (removeProject) => {
+    console.log('removeProject', removeProject) 6393453893 36I31162F99
+    let { projectsDetails } = details;
+    let { optionalFields } = projectsDetails;
+    let projectNumber = removeProject.target.textContent.replace(
+      /[^0-9]+/gi,
+      ""
+    );
+    // projectNumber = parseInt(projectNumber);
+    // optionalFields = optionalFields.filter(
+    //   (project, index) => projectNumber !== index + 1
+    // );
+    // console.log("optionalFields", optionalFields);
+    // setDetails({
+    //   ...details,
+    //   educationalDetails: { ...details["educationalDetails"], optionalFields },
+    // });
+    // console.log("details", details);
+  };
+
+  const onProjctChange = (
+    section,
+    filedType,
+    projectNumber,
+    field,
+    dataType,
+    value
+  ) => {
+    // console.log(section, filedType, projectNumber, field, dataType, value);
+    setDetails({
+      ...details,
+      [section]: {
+        ...details[section],
+        [filedType]: {
+          ...details[section][filedType],
+          [projectNumber]: {
+            ...details[section][filedType][projectNumber],
+            [field]: value,
+          },
+        },
+      },
+    });
+  };
+
   const onChange = (section, filedType, field, dataType, e) => {
+    // console.log(section, filedType, field, dataType, e);
     let { fieldsObject, isError } = errors;
-    fieldsObject[section][field] = false;
+    if (filedType !== "optionalFields") {
+      fieldsObject[section][field] = false;
+    }
     isError = false;
     setError({ ...errors, fieldsObject, isError });
 
-    if (dataType === "string") {
+    if (dataType === "string" && !Array.isArray(filedType)) {
       setDetails({
         ...details,
         [section]: {
@@ -248,7 +329,8 @@ function Resume() {
   };
 
   const componentRendered = () => {
-    let { personalDetails, setDetails, educationalDetails } = details;
+    let { personalDetails, setDetails, educationalDetails, projectsDetails } =
+      details;
     switch (step) {
       case 1:
         return (
@@ -280,6 +362,12 @@ function Resume() {
             nextStep={nextStep}
             prevStep={prevStep}
             step={step}
+            totalSteps={totalSteps}
+            onProjctChange={onProjctChange}
+            errors={errors}
+            projectsDetails={projectsDetails}
+            addMoreHandler={addMoreHandler}
+            removeProjectHandler={removeProjectHandler}
           />
         );
       case 4:
@@ -317,6 +405,7 @@ function Resume() {
         .trim()
     );
   };
+  // console.log('details', details)
 
   return (
     <>
@@ -377,11 +466,13 @@ function Resume() {
               >
                 {Object.keys(details).map((section, index) => {
                   let isEmpty = true;
-                  isEmpty = Object.keys(
-                    details[section]["requiredFields"]
-                  ).some((field) => {
-                    return details[section]["requiredFields"][field] === "";
-                  });
+                  isEmpty =
+                    details[section]["requiredFields"] &&
+                    Object.keys(details[section]["requiredFields"]).some(
+                      (field) => {
+                        return details[section]["requiredFields"][field] === "";
+                      }
+                    );
                   return (
                     <Box
                       display="flex"
